@@ -1,6 +1,6 @@
 from django.urls import path
 from rest_framework import routers
-import views
+from . import views
 
 router = routers.SimpleRouter()
 router.register('emails', views.EmailViewSet)

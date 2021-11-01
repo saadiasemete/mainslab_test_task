@@ -1,7 +1,7 @@
 from rest_framework import mixins, views, viewsets
 from django.core.mail import send_mail, BadHeaderError
-from models import SentMessageData
-from serializers import SentMessageDataSerializer
+from .models import SentMessageData
+from .serializers import SentMessageDataSerializer
 from django.http import JsonResponse
 
 
