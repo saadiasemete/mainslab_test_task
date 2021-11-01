@@ -20,3 +20,9 @@ class SentMessageData(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     objects = SentMessageDataManager
+
+    def analyze_last_24_hours(self):
+        queryset = self.objects.last_24_hours()
+        count = queryset.count()
+        top_emails = queryset.values('to_email').count().order_by('count')[:10]
+        return {'count': count, 'top_emails': top_emails}
