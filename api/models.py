@@ -10,8 +10,14 @@ class SentMessageDataManager(models.Manager):
     def get_queryset(self):
         return SentMessageDataQuerySet(self.model, using=self._db)
 
-    def last_24_hours(self):
-        return self.get_queryset().last_24_hours()
+    def analyze_last_24_hours(self):
+        queryset = self.get_queryset().last_24_hours()
+        count = queryset.count()
+        
+        top_emails = list(queryset.values('to_email')\
+            .annotate(count = models.Count('id'))\
+            .order_by('count')[:10])
+        return {'count': count, 'top_emails': top_emails}
 
 class SentMessageData(models.Model):
     id = models.UUIDField(primary_key=True)
@@ -19,10 +25,4 @@ class SentMessageData(models.Model):
     to_email = models.EmailField()
     created_at = models.DateTimeField(auto_now_add=True)
 
-    objects = SentMessageDataManager
-
-    def analyze_last_24_hours(self):
-        queryset = self.objects.last_24_hours()
-        count = queryset.count()
-        top_emails = queryset.values('to_email').count().order_by('count')[:10]
-        return {'count': count, 'top_emails': top_emails}
+    objects = SentMessageDataManager()

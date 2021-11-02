@@ -10,6 +10,7 @@ class EmailViewSet(mixins.ListModelMixin,
             viewsets.GenericViewSet):
     queryset = SentMessageData.objects.all()
     serializer_class = SentMessageDataSerializer
+    filter_fields = ('subject', 'to_email', 'created_at')
 
     def create(self, request):
         message = request.POST.get('message')
@@ -32,5 +33,7 @@ class EmailViewSet(mixins.ListModelMixin,
             return JsonResponse(serializer.errors, status=400)
 
 class RetrieveDayAnalytics(views.APIView):
-    def get(request):
-        return JsonResponse(SentMessageData.analyze_last_24_hours(), 200)
+    def get(self, request):
+        data = SentMessageData.objects.analyze_last_24_hours()
+        print(data)
+        return JsonResponse(data, status=200)
